@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>MoonHongLENORMAND</title>
+<meta name="description" content="레노먼드 36장으로 뽑는 카드 리딩. 1카드부터 그랑 타블로까지 일곱 가지 스프레드와 자리별 의미, 카드 도감.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='12' fill='%23110e22'/%3E%3Cpath d='M32 8l4 20 20 4-20 4-4 20-4-20-20-4 20-4z' fill='%23f2c230'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&family=Gowun+Batang:wght@400;700&display=swap">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="sky" aria-hidden="true"></div>
+
+<header class="top">
+  <a class="brand" href="#draw" aria-label="MoonHongLENORMAND 처음으로">Moon<b>Hong</b>LENORMAND</a>
+  <nav aria-label="주요 메뉴">
+    <a href="#draw">카드 뽑기</a>
+    <a href="#spreads">스프레드</a>
+    <a href="#library">카드 도감</a>
+    <a href="#guide">읽는 법</a>
+    <a href="#about">덱 이야기</a>
+  </nav>
+</header>
+
+<main>
+  <section class="intro" id="draw">
+    <p class="eyebrow">Petit Lenormand · 서른여섯 장의 그림</p>
+    <h1>카드와 카드를 이어,<br>한 문장으로 읽습니다</h1>
+    <p class="lead">레노먼드는 정방향·역방향이 없습니다. 대신 옆에 놓인 카드와 이어 붙여 뜻을 만듭니다. 그래서 어느 자리에 놓였는지, 무엇과 나란히 놓였는지가 답이 됩니다.</p>
+
+    <form class="setup" id="setup">
+      <fieldset class="spreads">
+        <legend>스프레드를 고르세요</legend>
+        <div class="spread-options" id="spreadOptions"></div>
+      </fieldset>
+
+      <div class="question">
+        <label for="question">마음속 질문 <span>(선택)</span></label>
+        <input id="question" name="question" type="text" maxlength="80" autocomplete="off" placeholder="예) 이번 달 금전운은 어떨까요?">
+      </div>
+
+      <button class="primary" type="submit">카드 섞기</button>
+    </form>
+  </section>
+
+  <section class="table" id="table" hidden>
+    <div class="table-head">
+      <h2 id="spreadTitle"></h2>
+      <p class="asked" id="asked" hidden></p>
+      <p class="status" id="status" role="status" aria-live="polite"></p>
+    </div>
+
+    <div class="deck" id="deck" aria-label="뒤집어 놓은 카드 36장"></div>
+
+    <div class="sig-pick" id="sigPick" role="group" aria-label="질문자 카드" hidden>
+      <span>질문자 카드</span>
+      <button type="button" class="chip" data-sig="29" aria-pressed="false">29 여자</button>
+      <button type="button" class="chip" data-sig="28" aria-pressed="false">28 남자</button>
+    </div>
+
+    <div class="layout-scroll"><div class="layout" id="layout"></div></div>
+
+    <div class="table-actions" id="tableActions" hidden>
+      <button type="button" class="ghost" id="flipAll">모두 뒤집기</button>
+      <button type="button" class="ghost" id="redraw">다시 뽑기</button>
+      <a class="ghost" href="#draw">스프레드 바꾸기</a>
+    </div>
+
+    <details class="posguide" id="posGuide" open></details>
+    <aside class="together" id="together" hidden></aside>
+    <div class="readings" id="readings"></div>
+  </section>
+
+  <section class="spread-book" id="spreads">
+    <h2>스프레드와 자리의 의미</h2>
+    <p class="section-lead">같은 카드라도 놓인 자리에 따라 맡는 역할이 달라집니다. 일곱 가지 스프레드의 자리마다 무엇을 읽는지 정리했습니다.</p>
+    <div class="spread-list" id="spreadList"></div>
+  </section>
+
+  <section class="library" id="library">
+    <h2>카드 도감</h2>
+    <p class="section-lead">1번 라이더부터 36번 십자가까지. 눌러서 키워드와 주제별 풀이, 체인 예시를 펼쳐 보세요.</p>
+    <div class="filters" id="filters" role="group" aria-label="성격별로 보기">
+      <button type="button" class="chip is-on" data-tone="all" aria-pressed="true">전체 <span id="cntAll"></span></button>
+      <button type="button" class="chip" data-tone="pos" aria-pressed="false">긍정 <span id="cntPos"></span></button>
+      <button type="button" class="chip" data-tone="neu" aria-pressed="false">중립 <span id="cntNeu"></span></button>
+      <button type="button" class="chip" data-tone="neg" aria-pressed="false">부정 <span id="cntNeg"></span></button>
+    </div>
+    <div class="card-grid" id="cardGrid"></div>
+  </section>
+
+  <section class="prose" id="guide">
+    <h2>레노먼드를 읽는 법</h2>
+    <p class="section-lead">한 장의 뜻을 외우는 것보다, 두 장을 이어 문장으로 만드는 연습이 먼저입니다.</p>
+
+    <ol class="guide-steps">
+      <li>
+        <h3>긍정·중립·부정부터 봅니다</h3>
+        <p>카드는 긍정, 중립, 부정 셋으로 나뉩니다. YES or NO로 답할 수 있는 질문은 이 성격만으로도 가늠할 수 있습니다.</p>
+        <p>중립 카드는 앞뒤에 나온 카드의 영향을 받습니다. 뒤에 나온 카드가 앞 카드의 기운에 색을 입힌다고 기억하세요.</p>
+      </li>
+      <li>
+        <h3>체인으로 잇습니다</h3>
+        <p>두 장을 이어 읽는 것을 체인이라고 합니다. 왼쪽 카드가 중심 의미, 오른쪽 카드가 그것을 꾸미는 설명입니다.</p>
+        <p>그래서 순서가 바뀌면 뜻도 달라집니다. ‘라이더+반지’는 고백이나 계약 소식이지만, 뒤집으면 약속이 움직이기 시작한다는 쪽에 가깝습니다.</p>
+      </li>
+      <li>
+        <h3>가운데 카드를 중심에 둡니다</h3>
+        <p>레노먼드는 3장, 5장, 9장처럼 홀수로 펼치는 일이 많습니다. 한가운데 카드를 중심으로 양쪽을 읽을 수 있기 때문입니다.</p>
+        <p>가운데 카드가 질문의 핵심이고, 왼쪽은 그렇게 된 까닭, 오른쪽은 흘러갈 방향입니다.</p>
+      </li>
+      <li>
+        <h3>달래 주는 카드를 찾습니다</h3>
+        <p>클로버와 태양은 부정 카드의 기운을 덜어 줍니다. 어두운 카드가 나와도 이 둘 중 하나가 곁에 있으면 숨통이 트입니다.</p>
+        <p>반대로 구름·산·쥐가 좋은 카드 옆에 붙으면 그 좋은 일이 늦어지거나 흐려집니다.</p>
+      </li>
+    </ol>
+
+    <ul class="cautions">
+      <li><strong>카드는 참고입니다.</strong>풀이는 지금의 흐름을 비춰 줄 뿐, 결정과 책임은 언제나 내 몫입니다.</li>
+      <li><strong>건강·법률·돈 문제는 전문가에게.</strong>카드의 건강 키워드는 살펴보라는 신호이지 진단이 아닙니다.</li>
+      <li><strong>같은 질문을 되풀이해 뽑지 마세요.</strong>마음에 드는 답이 나올 때까지 뽑으면 어떤 답도 믿을 수 없게 됩니다.</li>
+    </ul>
+  </section>
+
+  <section class="prose" id="about">
+    <h2>덱 이야기</h2>
+    <p class="section-lead">파리의 유명한 점술가 이름이 붙었지만, 이 카드는 독일의 놀이판에서 태어났습니다.</p>
+
+    <div class="about-grid">
+      <article>
+        <h3>마드무아젤 르노르망</h3>
+        <p><strong>마리 안 르노르망</strong>(1772~1843)은 프랑스 혁명기와 나폴레옹 시대의 파리에서 이름을 떨친 점술가입니다. 조제핀 황후를 비롯한 당대 인물들이 그를 찾았다고 전해집니다.</p>
+        <p>다만 그가 이 36장 카드를 직접 만들거나 썼다는 기록은 없습니다. 카드에 그의 이름이 붙은 것은 세상을 떠난 뒤의 일입니다.</p>
+      </article>
+
+      <article>
+        <h3>희망의 게임</h3>
+        <p>카드의 뿌리는 1799년 무렵 독일 뉘른베르크의 <strong>요한 카스파 헤히텔</strong>이 낸 ‘희망의 게임(Das Spiel der Hoffnung)’입니다. 36장을 6×6으로 깔아 놓고 주사위를 굴려 말을 옮기는 놀이였습니다.</p>
+        <p>라이더에서 십자가까지 이어지는 그림과 번호는 이때 이미 지금과 같았고, 설명서에는 점을 치는 방법도 함께 실려 있었습니다.</p>
+      </article>
+
+      <article>
+        <h3>프티 르노르망</h3>
+        <p>르노르망이 세상을 떠난 뒤인 1840년대, 이 36장 카드가 그의 명성을 빌려 ‘프티 르노르망’이라는 이름으로 팔리기 시작했습니다. 지금 우리가 레노먼드라고 부르는 덱입니다.</p>
+        <p>54장짜리 ‘그랑 죄 르노르망’은 이름만 같을 뿐 전혀 다른 덱입니다.</p>
+      </article>
+
+      <article>
+        <h3>그림이 곧 뜻</h3>
+        <p>레노먼드의 그림은 집, 나무, 편지, 열쇠처럼 일상의 사물입니다. 타로처럼 추상적인 장면에서 뜻을 길어 올리지 않고, 사물이 가진 뜻을 그대로 씁니다.</p>
+        <p>그래서 한 장으로는 단어 하나에 가깝고, 여러 장을 이어야 문장이 됩니다.</p>
+      </article>
+
+      <article>
+        <h3>트럼프 카드와의 짝</h3>
+        <p>전통 덱에는 카드마다 트럼프 카드가 한 장씩 그려져 있습니다. 희망의 게임이 독일식 36장 트럼프로도 쓸 수 있게 만들어졌기 때문입니다.</p>
+        <p>이 사이트에서는 그림과 번호만 씁니다.</p>
+      </article>
+
+      <article>
+        <h3>그랑 타블로</h3>
+        <p>36장을 한 장도 남기지 않고 모두 펼치는 ‘큰 그림’이 그랑 타블로입니다. 희망의 게임에서 카드를 판으로 깔던 방식과 닿아 있습니다.</p>
+        <p>질문 하나가 아니라 삶 전체의 지도를 보는 배열이라, 다른 스프레드에 익숙해진 뒤에 펼쳐 보기를 권합니다.</p>
+      </article>
+    </div>
+    <p class="fine">연도와 일화는 자료마다 조금씩 다릅니다. 여기에는 대체로 일치하는 내용만 옮겼습니다.</p>
+  </section>
+</main>
+
+<footer class="foot">
+  <p>카드 그림은 이 사이트를 위해 새로 그린 것입니다. 풀이는 참고용입니다.</p>
+  <p class="copy">© 2026 월홍 (MoonHong). All rights reserved.</p>
+</footer>
+
+<dialog class="card-dialog" id="cardDialog" aria-labelledby="dialogTitle">
+  <button type="button" class="dialog-close" id="dialogClose" aria-label="닫기">×</button>
+  <div id="dialogBody"></div>
+</dialog>
+
+<script src="cards.js"></script>
+<script src="art.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
